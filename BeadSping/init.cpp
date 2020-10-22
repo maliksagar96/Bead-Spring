@@ -8,21 +8,28 @@
 
 using namespace std;
 
-long int  particles = 50;
+long int  particles = 200;
 const double bondLength = 1.0, FEND = 0.0;		
 
-const double sigma = 0.8 * bondLength, epsilon = 4.0, mass = 1.0;		//Effectively Epsilon is 1.
-const double rc = pow(2,1/6) * sigma;
+const double sigma = 1 * bondLength, epsilon = 1.0, mass = 1.0;		//Effectively Epsilon is 1.
+const double onebySix = 1/6;
+const double rc = 2.5*sigma;//sigma*pow(2.0,onebySix);
 const double dt = 0.001;
-double boxLength = 50.10 * bondLength;
+double boxLength = 15.10 * bondLength;
 
 
 //FEND = in +ve x-direction for particle at (0,0,0) and in -ve X direction for last particle in chain
 
 
 double dt2by2 = (dt*dt)/(2.0*mass);
-double frc = epsilon * (12*pow(sigma, 12)/(pow(rc,13))-(6*(pow(sigma,6)/(pow(rc,7)))));
+double frc = epsilon * (12.0*(pow(sigma, 12.0)/pow(rc,13.0))-(6.0*(pow(sigma,6.0)/pow(rc,7.0))));
+double sig6 = pow(sigma,6)/pow(rc,6);
+//double urc = epsilon*sig6*(sig6-1);
+double urc = epsilon*((pow(sigma,12.0)/pow(rc,12.0)) - (pow(sigma,6.0)/pow(rc,6.0)));
+//double urc = epsilon*((sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma)/(rc*rc*rc*rc*rc*rc*rc*rc*rc*rc*rc*rc)) - (1/(rc*rc*rc*rc*rc*rc)));
 double stiffness = 1.0;
+
+double potentialEnergy = 0.0, kineticEnergy = 0.0, totalEnergy = 0.0;
 
 vector<double> x;vector<double> y;vector<double> z;
 vector<double> vx;vector<double> vy;vector<double> vz;
@@ -32,12 +39,9 @@ vector<double> newForceX, newForceY, newForceZ;
 
 void posInit(int seed) {
 	int i;
-	double x_init = boxLength/2, y_init = boxLength/2, z_init = boxLength/2; 
+	double x_init = boxLength/2.0, y_init = boxLength/2.0, z_init = boxLength/2.0; 
 	double phi = 0.0,theta = 0.0, l = bondLength;
-	//Took kbT = 1, taking stiffness for SAW
-	double stiffness = 100/(bondLength*bondLength * pow(particles, 1.2));		
-	cout<<"Spring Constant = "<<stiffness<<endl;
-	//Initializing x, y and z coordinates together
+	
 	x.insert(x.begin(), x_init);
 	y.insert(y.begin(), y_init);
 	z.insert(z.begin(), z_init);
@@ -61,20 +65,88 @@ void posInit(int seed) {
 			i = i-1;
 			x.erase(x.begin() + x.size() - 1);
 			y.erase(y.begin() + y.size() - 1);
-		}
-			
+		}		
 	}
-	/*
-	x[1] = 1;
-	y[1] = y[0];
-	z[1] = z[0];*/
-	//structureFile(x,y,z);	
+	structureFile(x,y,z);	
+}
+
+void posInitLJ() {
+	int i, maxCount, countx = 1, county = 1, countz = 1;
+	double x_init = 1.0, y_init = 1, z_init = 1.0; 
+	double sepFactor = sigma * 1.2;
+	
+	maxCount = (int)(boxLength/sepFactor);
+	
+	x.insert(x.begin(), x_init);
+	y.insert(y.begin(), y_init);
+	z.insert(z.begin(), z_init);
+	
+	for(i = 1;i<particles;i++) {
+		x.insert(x.begin()+i, 0);
+		y.insert(y.begin()+i, 0);
+		z.insert(z.begin()+i, z_init);
+	}
+	
+	for(i = 1;i<particles;i++) {		
+		
+		if(countx == maxCount) {
+			x[i] = x_init;	
+			countx = 1;
+		}
+		else {
+			x[i] = x[i-1] + sepFactor;
+			countx++;
+		}
+	}
+	
+	countx=1;
+	
+	for(i=1;i<particles;i++) {
+		
+		
+		
+		if(countx == maxCount) {
+			y[i] = y[i-1] + sepFactor;
+			countx = 1;
+			county++;
+		}
+	
+	
+		else {
+			y[i] = y[i-1];
+			countx++;
+		}
+		
+
+		if(county > maxCount){
+			y[i] = y_init;
+			countx = 1;
+			county = 1;
+		}		
+		
+	}
+	
+	for(i=1;i<particles;i++) {
+		
+		if(countz == (maxCount*maxCount)) {
+			z[i] = z[i-1] + sepFactor;
+			countz = 1;
+		}
+		
+		else{
+			z[i] = z[i-1];
+			countz++;
+		}
+	}
+
+	structureFile(x,y,z);	
+	
 }
 
 void velocityInit(double vmin, double vmax, int seed) {
 	srand(seed);
 	int i;
-	double avgVx = 0, avgVy = 0, avgVz = 0;
+	double avgVx = 0.0, avgVy = 0.0, avgVz = 0.0;
 	vx.insert(vx.begin(), 0.0);
 	vy.insert(vy.begin(), 0.0);
 	vz.insert(vz.begin(), 0.0);
@@ -101,7 +173,6 @@ void velocityInit(double vmin, double vmax, int seed) {
 		vy[i] = vy[i] - avgVy;
 		vz[i] = vz[i] - avgVz;
 	}
-	
 }
 
 void forceInit() {
@@ -203,9 +274,9 @@ void test() {
 	z.insert(z.begin(), z_init);
 	
 	for(i = 1;i<particles;i++) {
-		x.insert(x.begin() + i,x[i-1] + bondLength);
-		y.insert(y.begin() + i,y[i-1]);
-		z.insert(z.begin() + i,z[i-1]);
+		x.insert(x.begin() + i,x_init + 1.1);
+		y.insert(y.begin() + i,y_init);
+		z.insert(z.begin() + i,z_init);
 	}
 	
 	vx.insert(vx.begin(), 0.0);
@@ -232,7 +303,6 @@ void test() {
 		newForceZ.insert(newForceZ.begin() + i, 0.0);
 	}
 
-	cout<<"Avg Rg = "<<calcRg(x,y,z,calcAvg(x), calcAvg(y), calcAvg(z))<<endl;
 	structureFile(x,y,z);
 
 }

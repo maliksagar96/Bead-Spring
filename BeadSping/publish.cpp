@@ -40,7 +40,7 @@ void trajectoryFile(vector<double>& x_, vector<double>& y_, vector<double>& z_,
 	bs<<"ITEM: ATOMS id x y z vx vy vz"<<endl;
 	
 	for(i=0;i<x.size();i++) {
-		bs<<i<<" "<<x_[i]<<" "<<y_[i]<<" "<<z_[i]<<" "<<vx_[i]<<" "<<vy_[i]<<" "<<vz_[i]<<" "<<endl; 
+		bs<<setprecision(20)<<i<<" "<<x_[i]<<" "<<y_[i]<<" "<<z_[i]<<" "<<vx_[i]<<" "<<vy_[i]<<" "<<vz_[i]<<" "<<endl; 
 	}
 	bs.close();
 }
@@ -71,3 +71,9 @@ void writeData(){
 	dataFile.close(); 
 }
 
+void printConstants() {
+	
+	cout<<"Rc = "<<rc<<endl;
+	cout<<"Urc = "<<urc<<endl;
+	cout<<"Frc = "<<frc<<endl;
+}
