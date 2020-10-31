@@ -8,26 +8,25 @@
 using namespace std;
 
 int main () {
-	//printConstants();
-//	cout<<1/pow(2.5,6);
-
+	
 	long int i,j;
 
-	const int snap = 100;
-	const int cycles = 10000;//pow(10,5);
+	const int snap = 250;
+	const int cycles = 2*pow(10,5);
 	
 	const double vmin = -0.50;
 	const double vmax = 0.50;
+	
+	
 
-//	posInit(280);	
-	posInitLJ();
+//	posInit(2880);	
+	posLine();
 	forceInit();
-	velocityInit(vmin, vmax, 230);
-//	verlet(cycles, snap);
-	velocityVerlet(cycles, snap);                                              	
+	velocityInit(vmin, vmax, 212);
+	velocityVerlet(cycles, snap);	
+//	printConstants();
 //	energyPlot(cycles, snap);
 //	dataCollection(cycles, snap);
-	
 	return 0;
 }
 

@@ -31,8 +31,8 @@ double calcAvg(vector<double>& vec) {
 //Always force is calculated on xi partilce due to spring between xi and xj particle
 double springForce(double xi, double xj,double r) {
 	double force;
-	double xDiff = xi-xj;
-	//double xDiff = minDistance(xi, xj, boxLength);
+	//double xDiff = xi-xj;
+	double xDiff = minDistance(xi, xj, boxLength);
 	//if(xi == xj) return 0.0;
 	force = stiffness*(bondLength - abs(r))*(xDiff)/abs(r);
 	

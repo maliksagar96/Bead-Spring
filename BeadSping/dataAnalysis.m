@@ -1,6 +1,6 @@
 clear all, close all, clc
 
-energy = importdata('Energy.dat');
+energy = importdata('EnergyHalf.dat');
 
 hold on
 

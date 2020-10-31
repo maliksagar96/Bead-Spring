@@ -8,26 +8,25 @@
 
 using namespace std;
 
-long int  particles = 200;
+long int  particles = 50;
 const double bondLength = 1.0, FEND = 0.0;		
 
-const double sigma = 1 * bondLength, epsilon = 1.0, mass = 1.0;		//Effectively Epsilon is 1.
-const double onebySix = 1/6;
-const double rc = 2.5*sigma;//sigma*pow(2.0,onebySix);
+const double sigma = 0.8 * bondLength, epsilon = 1.0, mass = 1.0;		//Effectively Epsilon is 1.
+const double rc = sigma * pow(2.0,0.16666666);
 const double dt = 0.001;
-double boxLength = 15.10 * bondLength;
+double boxLength = 40.10 * bondLength;
 
 
 //FEND = in +ve x-direction for particle at (0,0,0) and in -ve X direction for last particle in chain
 
 
 double dt2by2 = (dt*dt)/(2.0*mass);
-double frc = epsilon * (12.0*(pow(sigma, 12.0)/pow(rc,13.0))-(6.0*(pow(sigma,6.0)/pow(rc,7.0))));
+double frc = epsilon * (12.0*(pow(sigma, 12)/pow(rc,13))-(6.0*(pow(sigma,6)/pow(rc,7))));
 double sig6 = pow(sigma,6)/pow(rc,6);
 //double urc = epsilon*sig6*(sig6-1);
 double urc = epsilon*((pow(sigma,12.0)/pow(rc,12.0)) - (pow(sigma,6.0)/pow(rc,6.0)));
 //double urc = epsilon*((sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma)/(rc*rc*rc*rc*rc*rc*rc*rc*rc*rc*rc*rc)) - (1/(rc*rc*rc*rc*rc*rc)));
-double stiffness = 1.0;
+double stiffness = 200.0;
 
 double potentialEnergy = 0.0, kineticEnergy = 0.0, totalEnergy = 0.0;
 
@@ -309,18 +308,14 @@ void test() {
 
 void posLine() {
 	int i;
-	double x_init = 0, y_init = boxLength/2, z_init = boxLength/2; 
+	boxLength = 2*particles*bondLength;
+	double x_init = boxLength/4, y_init = boxLength/2, z_init = boxLength/2; 
+
 	double l = bondLength;
-	//Took kbT = 1, taking stiffness for SAW
-	double stiffness = 100/(bondLength*bondLength * pow(particles, 1.2));		
 	
-	//Initializing x, y and z coordinates together
 	x.insert(x.begin(), x_init);
 	y.insert(y.begin(), y_init);
 	z.insert(z.begin(), z_init);
-	
-	vector<double> rand1;
-	vector<double> rand2;
 	
 	for(i = 1;i<particles;i++) {
 		

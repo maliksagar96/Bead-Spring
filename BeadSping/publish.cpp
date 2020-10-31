@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-
+#include <cmath>
 #include "molcDyn.h"
 
 using namespace std;
@@ -72,7 +72,7 @@ void writeData(){
 }
 
 void printConstants() {
-	
+	cout<<"Sigma = "<<sigma<<endl;
 	cout<<"Rc = "<<rc<<endl;
 	cout<<"Urc = "<<urc<<endl;
 	cout<<"Frc = "<<frc<<endl;

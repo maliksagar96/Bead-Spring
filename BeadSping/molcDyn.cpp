@@ -40,7 +40,7 @@ void updateForce() {
 		newForceZ[i] = 0.0;
 	}		
 
-	/*
+	
 	//Force Calculation  for 0th particle
 	r = sqrt((x[0]-x[1])*(x[0]-x[1])+
 			 (y[0]-y[1])*(y[0]-y[1])+
@@ -83,7 +83,7 @@ void updateForce() {
 		potentialEnergy = potentialEnergy + springPE(r);
 	}
 	
-	*/
+	
 	
 	for(i = 0;i<(particles-1);i++) {
 		for(j=(i+1);j<particles;j++) {
@@ -159,22 +159,23 @@ void velocityVerlet(int cycles, int snap) {
 		
 		//printVelocity(vz);
 	
-	/*	endDist = endDist + endDistance(x[0], y[0], z[0], x[particles -1], y[particles-1], z[particles-1]);	
+		endDist = endDist + endDistance(x[0], y[0], z[0], x[particles -1], y[particles-1], z[particles-1]);	
 		rg = rg + calcRg(x,y,z,calcAvg(x), calcAvg(y), calcAvg(z));
-		rgcount++;*/
+		rgcount++;
+
 		}
 	
 		updatePos();
 		updateForce();
 		updateVelocity();
 	}
-	/*
+	
 	rg = rg/rgcount;
 	endDist = endDist/rgcount;
 	cout<<"Particles = "<<particles<<endl;
 	cout<<"Avg end to end Distance = "<<endDist<<endl;	
 	cout<<"Avg Rg = "<<rg<<endl;
-	*/
+	
 	cout<<"Velocity Verlet Completed"<<endl;
 	bs.close();
 }
@@ -184,7 +185,7 @@ void energyPlot(int cycles, int snap) {
 	
 	long int i,j;
 	fstream energy;
-	energy.open("Energy.dat", ios::out);
+	energy.open("EnergyHalf.dat", ios::out);
 	
 	for(j = 0;j<cycles;j++) {
 		
@@ -227,36 +228,28 @@ void dataCollection(int cycles, int snap) {
 	fstream data;
 	data.open("rg.dat", ios::out);
 	
-	for(k = 0;k<9;k++) {
+	for(k = 0;k<10;k++) {
 		endDist = 0;
 		rg = 0;
 		rgcount = 0;
-		posInit(280);
-		velocityInit(-0.50,0.50,288);
+		posLine();
+		velocityInit(-0.50,0.50,212);
 		forceInit();
-		
-		//Equilibrium loop
-		/*for(j = 0;j<100000;j++) {
-			updatePos();
-			updateForce();
-			updateVelocity();
-		}*/
 		
 		cout<<"Equilibrating For K = "<<k<<" Number of particles = "<<particles<<endl;
 		
 		//DataCollection loop
 		for(j = 0;j<cycles;j++) {
-	
-			if(((j%snap) == 0)) {
-				endDist = endDist + endDistance(x[0], y[0], z[0], x[particles -1], y[particles-1], z[particles-1]);
-				rg = rg + calcRg(x,y,z,calcAvg(x), calcAvg(y), calcAvg(z));
-				rgcount++;
-			}
 		
 			updatePos();
 			updateForce();
 			updateVelocity();
 		
+			if(((j%snap) == 0)) {
+				endDist = endDist + endDistance(x[0], y[0], z[0], x[particles -1], y[particles-1], z[particles-1]);
+				rg = rg + calcRg(x,y,z,calcAvg(x), calcAvg(y), calcAvg(z));
+				rgcount++;
+			}
 		}
 		rg = rg/rgcount;
 		endDist = endDist/rgcount;
@@ -266,7 +259,7 @@ void dataCollection(int cycles, int snap) {
 		cout<<"End Distance = "<<endDist<<endl;
 		data<<particles<<"\t \t"<<rg<<"\t \t"<<endDist<<endl;
 
-		particles = particles + 20;
+		particles = particles + 10;
 		
 		x.clear();
 		y.clear();
