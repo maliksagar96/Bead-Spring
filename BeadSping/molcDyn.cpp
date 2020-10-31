@@ -180,12 +180,11 @@ void velocityVerlet(int cycles, int snap) {
 	bs.close();
 }
 
-
 void energyPlot(int cycles, int snap) {
 	
 	long int i,j;
 	fstream energy;
-	energy.open("EnergyHalf.dat", ios::out);
+	energy.open("Energy.dat", ios::out);
 	
 	for(j = 0;j<cycles;j++) {
 		
@@ -194,15 +193,52 @@ void energyPlot(int cycles, int snap) {
 		updateVelocity();	
 		
 		if(((j%snap) == 0)) {
-			energy<<setw(6)<<j<<setprecision(10)<<setw(22)<<potentialEnergy<<setw(22)<<kineticEnergy<<setw(22)<<totalEnergy<<endl;
-			//energy<<setw(6)<<j<<"\t\t"<<potentialEnergy<<"\t\t"<<kineticEnergy<<"\t\t"<<totalEnergy<<endl;
-			
+			energy<<setw(6)<<j<<setprecision(10)<<setw(22)<<potentialEnergy<<setw(22)<<kineticEnergy<<setw(22)<<totalEnergy<<endl;	
 			cout<<"Completed Simulation = "<<j+snap<<endl;
-		}
-		
+		}		
 	}
 	cout<<"Energy Plotting completed"<<endl;
 	energy.close();
+}
+
+void energyEquil1(int cycles, int snap) {
+	
+	long int i,j;
+	fstream energy1;
+	energy1.open("Energyequilibrium.dat", ios::out);
+	
+	for(j = 0;j<cycles;j++) {
+		
+		updatePos();
+		updateForce();
+		updateVelocity();	
+		
+		if(((j%snap) == 0)) {
+			energy1<<setw(6)<<j<<setprecision(10)<<setw(22)<<potentialEnergy<<setw(22)<<kineticEnergy<<setw(22)<<totalEnergy<<endl;
+		}
+	}
+	cout<<"Energy Equilibrium 1 completed"<<endl;
+	energy1.close();
+}
+
+void energyEquil2(int cycles, int snap) {
+	
+	long int i,j;
+	fstream energy2;
+	energy2.open("Energyequilibrium2.dat", ios::out);
+	
+	for(j = 0;j<cycles;j++) {
+		
+		updatePos();
+		updateForce();
+		updateVelocity();	
+		
+		if(((j%snap) == 0)) {
+			energy2<<setw(6)<<j<<setprecision(10)<<setw(22)<<potentialEnergy<<setw(22)<<kineticEnergy<<setw(22)<<totalEnergy<<endl;		
+		}
+	}
+	cout<<"Energy Equilibrium 2completed"<<endl;
+	energy2.close();
 }
 
 void verlet(int cycles, int snap) {
@@ -212,11 +248,7 @@ void verlet(int cycles, int snap) {
 		updateForce();
 		updateVelocity();
 		if((i%snap) == 0) {
-			printVelocity(vx);
-			printVelocity(vy);
-			printVelocity(vz);
 			cout<<"Completed Simulation = "<<i<<endl;
-		
 		}
 	}
 }

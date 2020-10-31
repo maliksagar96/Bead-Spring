@@ -13,12 +13,10 @@ const double bondLength = 1.0, FEND = 0.0;
 
 const double sigma = 0.8 * bondLength, epsilon = 1.0, mass = 1.0;		//Effectively Epsilon is 1.
 const double rc = sigma * pow(2.0,0.16666666);
-const double dt = 0.001;
+double dt = 0.005;
 double boxLength = 40.10 * bondLength;
 
-
 //FEND = in +ve x-direction for particle at (0,0,0) and in -ve X direction for last particle in chain
-
 
 double dt2by2 = (dt*dt)/(2.0*mass);
 double frc = epsilon * (12.0*(pow(sigma, 12)/pow(rc,13))-(6.0*(pow(sigma,6)/pow(rc,7))));
@@ -26,7 +24,7 @@ double sig6 = pow(sigma,6)/pow(rc,6);
 //double urc = epsilon*sig6*(sig6-1);
 double urc = epsilon*((pow(sigma,12.0)/pow(rc,12.0)) - (pow(sigma,6.0)/pow(rc,6.0)));
 //double urc = epsilon*((sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma*sigma)/(rc*rc*rc*rc*rc*rc*rc*rc*rc*rc*rc*rc)) - (1/(rc*rc*rc*rc*rc*rc)));
-double stiffness = 200.0;
+double stiffness = 100.0;
 
 double potentialEnergy = 0.0, kineticEnergy = 0.0, totalEnergy = 0.0;
 
@@ -35,6 +33,9 @@ vector<double> vx;vector<double> vy;vector<double> vz;
 vector<double> fx;vector<double> fy;vector<double> fz;
 vector<double> newForceX, newForceY, newForceZ;
 
+vector<double> xeq;vector<double> yeq;vector<double> zeq;
+vector<double> vxeq;vector<double> vyeq;vector<double> vzeq;
+vector<double> fxeq;vector<double> fyeq;vector<double> fzeq;
 
 void posInit(int seed) {
 	int i;
@@ -67,6 +68,57 @@ void posInit(int seed) {
 		}		
 	}
 	structureFile(x,y,z);	
+}
+
+void posEq() {
+	int i;
+	double x_init = 0, y_init = 0, z_init = 0; 
+	
+	xeq.insert(xeq.begin(), x_init);
+	yeq.insert(yeq.begin(), y_init);
+	zeq.insert(zeq.begin(), z_init);
+	
+	
+	for(i = 1;i<particles;i++) {
+		
+		xeq.insert(xeq.begin() + i,0);
+		yeq.insert(yeq.begin() + i,0);
+		zeq.insert(zeq.begin() + i,0);
+	}		
+}
+
+void velocityEq() {
+	int i;
+	double x_init = 0, y_init = 0, z_init = 0; 
+	
+	vxeq.insert(vxeq.begin(), x_init);
+	vyeq.insert(vyeq.begin(), y_init);
+	vzeq.insert(vzeq.begin(), z_init);
+	
+	
+	for(i = 1;i<particles;i++) {
+		
+		vxeq.insert(vxeq.begin() + i,0);
+		vyeq.insert(vyeq.begin() + i,0);
+		vzeq.insert(vzeq.begin() + i,0);
+	}
+}
+
+void forceEq() {
+	int i;
+	double x_init = 0, y_init = 0, z_init = 0; 
+	
+	fxeq.insert(fxeq.begin(), x_init);
+	fyeq.insert(fyeq.begin(), y_init);
+	fzeq.insert(fzeq.begin(), z_init);
+	
+	
+	for(i = 1;i<particles;i++) {
+		
+		fxeq.insert(fxeq.begin() + i,0);
+		fyeq.insert(fyeq.begin() + i,0);
+		fzeq.insert(fzeq.begin() + i,0);
+	}
 }
 
 void posInitLJ() {

@@ -77,3 +77,33 @@ void printConstants() {
 	cout<<"Urc = "<<urc<<endl;
 	cout<<"Frc = "<<frc<<endl;
 }
+
+
+void finalData() {
+	int i;
+	
+	fstream positions;
+	fstream velocities;
+	fstream forces;
+	
+	positions.open("pos.dat", ios::out);
+	velocities.open("vel.dat", ios::out);
+	forces.open("forces.dat", ios::out);
+	
+	for(i=0;i<x.size();i++) {
+		positions<<x[i]<<"\t\t"<<y[i]<<"\t\t"<<z[i]<<endl;
+		velocities<<vx[i]<<"\t\t"<<vy[i]<<"\t\t"<<vz[i]<<endl;
+		forces<<fx[i]<<"\t\t"<<fy[i]<<"\t\t"<<fz[i]<<endl;
+	}
+	
+	positions.close();
+	velocities.close();
+	forces.close();
+}
+
+void equilVector(vector<double>& x1, vector<double>& x2) {
+	
+	for(int i = 0;i<x1.size();i++) {
+		x2[i] = x1[i];
+	}
+}

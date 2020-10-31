@@ -10,7 +10,7 @@ using namespace std;
 extern long int particles;
 extern double boxLength;
 extern const double sigma, epsilon, mass,bondLength ,relaxLen, FEND, rc;
-extern const double dt;
+extern double dt;
 extern double dt2by2, stiffness;
 extern double frc, urc;
 extern double potentialEnergy, kineticEnergy, totalEnergy;
@@ -20,6 +20,12 @@ extern vector<double> x;extern vector<double> y;extern vector<double> z;
 extern vector<double> vx;extern vector<double> vy;extern vector<double> vz;
 extern vector<double> fx;extern vector<double> fy;extern vector<double> fz;
 extern vector<double> newForceX, newForceY, newForceZ;
+
+
+/****/
+extern vector<double> xeq;extern vector<double> yeq;extern vector<double> zeq;
+extern vector<double> vxeq;extern vector<double> vyeq;extern vector<double> vzeq;
+extern vector<double> fxeq;extern vector<double> fyeq;extern vector<double> fzeq;
 
 /***Defining functions to initialise position,force and velocity***/
 /**********************************************************************************
@@ -37,6 +43,10 @@ void forceInit();
 void velocityInit2D(double, double, int);
 void test();
 void modifyPos(int);
+void posEq();
+void velocityEq();
+void forceEq();
+
 bool excludeVolume(vector<double>& ,vector<double>& ,vector<double>& ,double ,double, double);
 double randInRange(double, double );
 void initRand(int);			// For a different random number generator everytime
@@ -51,6 +61,9 @@ void velocityVerlet(int, int);
 void energyPlot(int, int);
 void dataCollection(int, int);
 void verlet(int, int);
+void energyEquil1(int, int);
+void energyEquil2(int, int);
+
 /*--------------------------------------------------------------------------------------------*/
 
 /***CALC.CPP***/
@@ -75,6 +88,8 @@ void trajectoryFile(vector<double>& ,vector<double>& , vector<double>& ,
 					vector<double>& ,vector<double>& , vector<double>&, int );			//To print out any vector quantity at a time
 void printVector(vector<double>&);
 void printVelocity(vector<double>&);
+void equilVector(vector<double>&, vector<double>&);
 void printConstants();
+void finalData();
 
 #endif
